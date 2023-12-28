@@ -714,6 +714,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     zip: Attribute.String;
     Country: Attribute.String;
     language: Attribute.String & Attribute.Required;
+    current_session: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToOne',
+      'api::current-session.current-session'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -806,6 +811,88 @@ export interface ApiCurrencyCurrency extends Schema.CollectionType {
   };
 }
 
+export interface ApiCurrentSessionCurrentSession extends Schema.CollectionType {
+  collectionName: 'current_sessions';
+  info: {
+    singularName: 'current-session';
+    pluralName: 'current-sessions';
+    displayName: 'Current session';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    car: Attribute.String & Attribute.Required;
+    parking: Attribute.Relation<
+      'api::current-session.current-session',
+      'manyToOne',
+      'api::parking.parking'
+    >;
+    duration: Attribute.Relation<
+      'api::current-session.current-session',
+      'oneToOne',
+      'api::duration.duration'
+    >;
+    user: Attribute.Relation<
+      'api::current-session.current-session',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::current-session.current-session',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::current-session.current-session',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiDurationDuration extends Schema.CollectionType {
+  collectionName: 'durations';
+  info: {
+    singularName: 'duration';
+    pluralName: 'durations';
+    displayName: 'Duration';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    start: Attribute.DateTime & Attribute.Required;
+    end: Attribute.DateTime;
+    current_session: Attribute.Relation<
+      'api::duration.duration',
+      'oneToOne',
+      'api::current-session.current-session'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::duration.duration',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::duration.duration',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiLocationLocation extends Schema.CollectionType {
   collectionName: 'locations';
   info: {
@@ -870,6 +957,11 @@ export interface ApiParkingParking extends Schema.CollectionType {
       'api::parking.parking',
       'oneToMany',
       'api::price-rate.price-rate'
+    >;
+    current_sessions: Attribute.Relation<
+      'api::parking.parking',
+      'oneToMany',
+      'api::current-session.current-session'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -944,6 +1036,8 @@ declare module '@strapi/types' {
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'plugin::i18n.locale': PluginI18NLocale;
       'api::currency.currency': ApiCurrencyCurrency;
+      'api::current-session.current-session': ApiCurrentSessionCurrentSession;
+      'api::duration.duration': ApiDurationDuration;
       'api::location.location': ApiLocationLocation;
       'api::parking.parking': ApiParkingParking;
       'api::price-rate.price-rate': ApiPriceRatePriceRate;

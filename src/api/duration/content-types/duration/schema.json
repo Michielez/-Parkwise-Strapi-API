@@ -1,0 +1,28 @@
+{
+  "kind": "collectionType",
+  "collectionName": "durations",
+  "info": {
+    "singularName": "duration",
+    "pluralName": "durations",
+    "displayName": "Duration"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "start": {
+      "required": true,
+      "type": "datetime"
+    },
+    "end": {
+      "type": "datetime"
+    },
+    "current_session": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::current-session.current-session",
+      "mappedBy": "duration"
+    }
+  }
+}

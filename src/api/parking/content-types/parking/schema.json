@@ -35,6 +35,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::price-rate.price-rate"
+    },
+    "current_sessions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::current-session.current-session",
+      "mappedBy": "parking"
     }
   }
 }

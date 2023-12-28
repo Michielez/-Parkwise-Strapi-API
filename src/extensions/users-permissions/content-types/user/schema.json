@@ -93,6 +93,12 @@
     "language": {
       "type": "string",
       "required": true
+    },
+    "current_session": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::current-session.current-session",
+      "inversedBy": "user"
     }
   }
 }
