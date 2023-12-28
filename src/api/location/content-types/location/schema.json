@@ -17,6 +17,12 @@
     },
     "lat": {
       "type": "float"
+    },
+    "parking": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::parking.parking",
+      "inversedBy": "location"
     }
   }
 }

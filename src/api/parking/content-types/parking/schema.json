@@ -4,7 +4,8 @@
   "info": {
     "singularName": "parking",
     "pluralName": "parkings",
-    "displayName": "Parking"
+    "displayName": "Parking",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -18,6 +19,22 @@
     "name": {
       "type": "string",
       "required": true
+    },
+    "currency": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::currency.currency"
+    },
+    "location": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::location.location",
+      "inversedBy": "parking"
+    },
+    "price_rates": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::price-rate.price-rate"
     }
   }
 }

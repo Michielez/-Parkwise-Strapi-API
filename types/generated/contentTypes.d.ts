@@ -819,6 +819,11 @@ export interface ApiLocationLocation extends Schema.CollectionType {
   attributes: {
     lng: Attribute.Float & Attribute.Required;
     lat: Attribute.Float;
+    parking: Attribute.Relation<
+      'api::location.location',
+      'oneToOne',
+      'api::parking.parking'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -843,6 +848,7 @@ export interface ApiParkingParking extends Schema.CollectionType {
     singularName: 'parking';
     pluralName: 'parkings';
     displayName: 'Parking';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -850,6 +856,21 @@ export interface ApiParkingParking extends Schema.CollectionType {
   attributes: {
     type: Attribute.String & Attribute.Required;
     name: Attribute.String & Attribute.Required;
+    currency: Attribute.Relation<
+      'api::parking.parking',
+      'oneToOne',
+      'api::currency.currency'
+    >;
+    location: Attribute.Relation<
+      'api::parking.parking',
+      'oneToOne',
+      'api::location.location'
+    >;
+    price_rates: Attribute.Relation<
+      'api::parking.parking',
+      'oneToMany',
+      'api::price-rate.price-rate'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -874,6 +895,7 @@ export interface ApiPriceRatePriceRate extends Schema.CollectionType {
     singularName: 'price-rate';
     pluralName: 'price-rates';
     displayName: 'Price rate';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -881,6 +903,10 @@ export interface ApiPriceRatePriceRate extends Schema.CollectionType {
   attributes: {
     minutes: Attribute.Integer & Attribute.Required;
     price: Attribute.Decimal & Attribute.Required;
+    minprice: Attribute.String &
+      Attribute.Required &
+      Attribute.Private &
+      Attribute.Unique;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

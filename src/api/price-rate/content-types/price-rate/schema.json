@@ -4,7 +4,8 @@
   "info": {
     "singularName": "price-rate",
     "pluralName": "price-rates",
-    "displayName": "Price rate"
+    "displayName": "Price rate",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -18,6 +19,12 @@
     "price": {
       "type": "decimal",
       "required": true
+    },
+    "minprice": {
+      "type": "string",
+      "private": true,
+      "required": true,
+      "unique": true
     }
   }
 }
