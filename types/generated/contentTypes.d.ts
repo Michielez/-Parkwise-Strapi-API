@@ -719,6 +719,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'oneToOne',
       'api::current-session.current-session'
     >;
+    recent_transactions: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::recent-transaction.recent-transaction'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1091,6 +1096,11 @@ export interface ApiRecentTransactionRecentTransaction
       'api::recent-transaction.recent-transaction',
       'oneToOne',
       'api::payment.payment'
+    >;
+    user: Attribute.Relation<
+      'api::recent-transaction.recent-transaction',
+      'manyToOne',
+      'plugin::users-permissions.user'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;

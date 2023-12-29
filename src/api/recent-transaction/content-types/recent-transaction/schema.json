@@ -31,6 +31,12 @@
       "relation": "oneToOne",
       "target": "api::payment.payment",
       "inversedBy": "recent_transaction"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "recent_transactions"
     }
   }
 }

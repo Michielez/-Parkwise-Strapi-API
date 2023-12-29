@@ -99,6 +99,12 @@
       "relation": "oneToOne",
       "target": "api::current-session.current-session",
       "inversedBy": "user"
+    },
+    "recent_transactions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::recent-transaction.recent-transaction",
+      "mappedBy": "user"
     }
   }
 }
