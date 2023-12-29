@@ -55,3 +55,10 @@ Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/
 ---
 
 <sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+
+# Parkwise Strapi API
+## Deploy on DigitalOcean
+
+### Create a droplet
+
+You'll need Ubuntu 22.04(LTS) and 2CPU, 4GB RAM.
