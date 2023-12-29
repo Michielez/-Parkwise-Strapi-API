@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "recent_transactions",
+  "info": {
+    "singularName": "recent-transaction",
+    "pluralName": "recent-transactions",
+    "displayName": "Recent transaction"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "car": {
+      "type": "string",
+      "required": true
+    },
+    "duration": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::duration.duration",
+      "inversedBy": "recent_transaction"
+    },
+    "parking": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::parking.parking"
+    },
+    "payment": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::payment.payment",
+      "inversedBy": "recent_transaction"
+    }
+  }
+}

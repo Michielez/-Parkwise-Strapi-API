@@ -1,34 +1,36 @@
 {
   "kind": "collectionType",
-  "collectionName": "durations",
+  "collectionName": "payments",
   "info": {
-    "singularName": "duration",
-    "pluralName": "durations",
-    "displayName": "Duration"
+    "singularName": "payment",
+    "pluralName": "payments",
+    "displayName": "Payment"
   },
   "options": {
     "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
-    "start": {
-      "required": true,
+    "method": {
+      "type": "string",
+      "required": true
+    },
+    "time": {
       "type": "datetime"
     },
-    "end": {
-      "type": "datetime"
+    "amount": {
+      "type": "decimal"
     },
-    "current_session": {
+    "currency": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "api::current-session.current-session",
-      "mappedBy": "duration"
+      "target": "api::currency.currency"
     },
     "recent_transaction": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::recent-transaction.recent-transaction",
-      "mappedBy": "duration"
+      "mappedBy": "payment"
     }
   }
 }

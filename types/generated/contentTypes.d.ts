@@ -875,6 +875,11 @@ export interface ApiDurationDuration extends Schema.CollectionType {
       'oneToOne',
       'api::current-session.current-session'
     >;
+    recent_transaction: Attribute.Relation<
+      'api::duration.duration',
+      'oneToOne',
+      'api::recent-transaction.recent-transaction'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -981,6 +986,48 @@ export interface ApiParkingParking extends Schema.CollectionType {
   };
 }
 
+export interface ApiPaymentPayment extends Schema.CollectionType {
+  collectionName: 'payments';
+  info: {
+    singularName: 'payment';
+    pluralName: 'payments';
+    displayName: 'Payment';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    method: Attribute.String & Attribute.Required;
+    time: Attribute.DateTime;
+    amount: Attribute.Decimal;
+    currency: Attribute.Relation<
+      'api::payment.payment',
+      'oneToOne',
+      'api::currency.currency'
+    >;
+    recent_transaction: Attribute.Relation<
+      'api::payment.payment',
+      'oneToOne',
+      'api::recent-transaction.recent-transaction'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::payment.payment',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::payment.payment',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiPriceRatePriceRate extends Schema.CollectionType {
   collectionName: 'price_rates';
   info: {
@@ -1017,6 +1064,52 @@ export interface ApiPriceRatePriceRate extends Schema.CollectionType {
   };
 }
 
+export interface ApiRecentTransactionRecentTransaction
+  extends Schema.CollectionType {
+  collectionName: 'recent_transactions';
+  info: {
+    singularName: 'recent-transaction';
+    pluralName: 'recent-transactions';
+    displayName: 'Recent transaction';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    car: Attribute.String & Attribute.Required;
+    duration: Attribute.Relation<
+      'api::recent-transaction.recent-transaction',
+      'oneToOne',
+      'api::duration.duration'
+    >;
+    parking: Attribute.Relation<
+      'api::recent-transaction.recent-transaction',
+      'oneToOne',
+      'api::parking.parking'
+    >;
+    payment: Attribute.Relation<
+      'api::recent-transaction.recent-transaction',
+      'oneToOne',
+      'api::payment.payment'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::recent-transaction.recent-transaction',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::recent-transaction.recent-transaction',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -1040,7 +1133,9 @@ declare module '@strapi/types' {
       'api::duration.duration': ApiDurationDuration;
       'api::location.location': ApiLocationLocation;
       'api::parking.parking': ApiParkingParking;
+      'api::payment.payment': ApiPaymentPayment;
       'api::price-rate.price-rate': ApiPriceRatePriceRate;
+      'api::recent-transaction.recent-transaction': ApiRecentTransactionRecentTransaction;
     }
   }
 }
