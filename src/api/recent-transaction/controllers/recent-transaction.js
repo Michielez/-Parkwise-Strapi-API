@@ -6,17 +6,16 @@
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
-module.exports = createCoreController('api::recent-transaction.recent-transaction', ({strapi})=> ({
+module.exports = createCoreController('api::recent-transaction.recent-transaction', ({ strapi }) => ({
   ...createCoreController('api::recent-transaction.recent-transaction'),
 
   async findCurrentUserRecentTransactions(ctx) {
     const user = ctx.state.user;
-    console.log(ctx);
     if (!user) {
       return ctx.unauthorized(`You're not authorized!`);
     }
 
-    const recentTransactions = await strapi.entityService.findMany('api::recent-transaction.recent-transaction',{
+    const recentTransactions = await strapi.entityService.findMany('api::recent-transaction.recent-transaction', {
       filters: { user: user.id },
       populate: {
         duration: true,
@@ -33,56 +32,98 @@ module.exports = createCoreController('api::recent-transaction.recent-transactio
           }
         }
       }
-    })
-
-    const filteredRecentTransactions = recentTransactions.map(transaction => {
-      const { createdAt, publishedAt, updatedAt, duration, parking, payment, ...restTransaction } = transaction;
-
-      const filteredDuration = duration ? {
-        ...duration,
-        createdAt: undefined,
-        publishedAt: undefined,
-        updatedAt: undefined
-      } : null;
-
-      const filteredParking = parking? {
-        ...parking,
-        createdAt: undefined,
-        publishedAt: undefined,
-        updatedAt: undefined,
-        location: parking.location? {
-          ...parking.location,
-          createdAt: undefined,
-          publishedAt: undefined,
-          updatedAt: undefined,
-        } : null,
-        price_rates: parking.price_rates.map(rate => ({
-          ...rate,
-          createdAt: undefined,
-          publishedAt: undefined,
-          updatedAt: undefined,
-          minprice: undefined
-        }))
-      } : null;
-
-      const filteredPayment = payment ? {
-        ...payment,
-        createdAt: undefined,
-        publishedAt: undefined,
-        updatedAt: undefined,
-        currency: payment.currency ? {
-          ...payment.currency,
-          createdAt: undefined,
-          publishedAt: undefined,
-          updatedAt: undefined
-        } : null
-      } : null;
-
-
-      return { ...restTransaction, duration: filteredDuration, parking: filteredParking, payment: filteredPayment };
     });
 
+    const formattedTransactions = recentTransactions.map(transaction => {
+      return {
+        id: transaction.id,
+        attributes: {
+          ...transaction,
+          createdAt: undefined,
+          publishedAt: undefined,
+          updatedAt: undefined,
+          duration: transaction.duration ? {
+            data: {
+              id: transaction.duration.id,
+              attributes: {
+                ...transaction.duration,
+                createdAt: undefined,
+                publishedAt: undefined,
+                updatedAt: undefined
+              }
+            }
+          } : null,
+          parking: transaction.parking ? {
+            data: {
+              id: transaction.parking.id,
+              attributes: {
+                ...transaction.parking,
+                createdAt: undefined,
+                publishedAt: undefined,
+                updatedAt: undefined,
+                location: transaction.parking.location ? {
+                  data: {
+                    id: transaction.parking.location.id,
+                    attributes: {
+                      ...transaction.parking.location,
+                      createdAt: undefined,
+                      publishedAt: undefined,
+                      updatedAt: undefined,
+                    }
+                  }
+                } : null,
+                price_rates: transaction.parking.price_rates.map(rate => ({
+                  id: rate.id,
+                  attributes: {
+                    ...rate,
+                    createdAt: undefined,
+                    publishedAt: undefined,
+                    updatedAt: undefined,
+                  }
+                })),
+                currency: transaction.parking.currency ? {
+                  data: {
+                    id: transaction.parking.currency.id,
+                    attributes: {
+                      ...transaction.parking.currency,
+                      createdAt: undefined,
+                      publishedAt: undefined,
+                      updatedAt: undefined,
+                    }
+                  }
+                } : null
+              }
+            }
+          } : null,
+          payment: transaction.payment ? {
+            data: {
+              id: transaction.payment.id,
+              attributes: {
+                ...transaction.payment,
+                createdAt: undefined,
+                publishedAt: undefined,
+                updatedAt: undefined,
+                currency: transaction.payment.currency ? {
+                  data: {
+                    id: transaction.payment.currency.id,
+                    attributes: {
+                      ...transaction.payment.currency,
+                      createdAt: undefined,
+                      publishedAt: undefined,
+                      updatedAt: undefined,
+                    }
+                  }
+                } : null
+              }
+            }
+          } : null,
+        }
+      };
+    });
 
-    return filteredRecentTransactions;
+    return {
+      data: formattedTransactions,
+      meta: {} // Add relevant meta information here
+    };
   }
 }));

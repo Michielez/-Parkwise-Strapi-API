@@ -6,8 +6,9 @@
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
-module.exports = createCoreController('api::current-session.current-session', ({ strapi }) =>({
+module.exports = createCoreController('api::current-session.current-session', ({ strapi }) => ({
   ...createCoreController('api::current-session.current-session'),
+
   async findCurrentUserCurrentSessions(ctx) {
     const user = ctx.state.user;
 
@@ -16,61 +17,100 @@ module.exports = createCoreController('api::current-session.current-session', ({
     }
 
     const currentSessions = await strapi.entityService.findMany('api::current-session.current-session', {
-      filter: { user: user.id },
+      filters: { user: user.id },
       populate: {
         duration: true,
         parking: {
           populate: {
             price_rates: true,
             location: true,
-            currency: true
+            currency: true,
+            capacity: true
           }
         },
+        user: true,
       }
-    })
+    });
 
-    const filteredCurrentSessions = currentSessions.map(session => {
-      const { createdAt, publishedAt, updatedAt, duration, parking,...restSession } = session;
-      const filteredDuration = duration? {
-        ...duration,
-        createdAt: undefined,
-        publishedAt: undefined,
-        updatedAt: undefined
-      } : null;
-
-      const filteredParking = parking? {
-        ...parking,
-        createdAt: undefined,
-        publishedAt: undefined,
-        updatedAt: undefined,
-        location: parking.location? {
-          ...parking.location,
-          createdAt: undefined,
-          publishedAt: undefined,
-          updatedAt: undefined,
-        } : null,
-        price_rates: parking.price_rates.map(rate => ({
-          ...rate,
-          createdAt: undefined,
-          publishedAt: undefined,
-          updatedAt: undefined,
-          minprice: undefined
-        })),
-        currency: parking.currency? {
-          ...parking.currency,
-          createdAt: undefined,
-          publishedAt: undefined,
-          updatedAt: undefined
-        } : null
-      } : null;
-
+    console.log(currentSessions);
+    const formattedSessions = currentSessions.map(session => {
       return {
-        ...restSession,
-        duration: filteredDuration,
-        parking: filteredParking
-      }
-    })
-
-    return filteredCurrentSessions[0];
+        id: session.id,
+        attributes: {
+          ...session,
+          createdAt: undefined,
+          publishedAt: undefined,
+          updatedAt: undefined,
+          duration: session.duration ? {
+            data: {
+              id: session.duration.id,
+              attributes: {
+                ...session.duration,
+                createdAt: undefined,
+                publishedAt: undefined,
+                updatedAt: undefined
+              }
+            }
+          } : null,
+          parking: session.parking ? {
+            data: {
+              id: session.parking.id,
+              attributes: {
+                ...session.parking,
+                createdAt: undefined,
+                publishedAt: undefined,
+                updatedAt: undefined,
+                price_rates: session.parking.price_rates.map(rate => ({
+                  id: rate.id,
+                  attributes: {
+                    ...rate,
+                    createdAt: undefined,
+                    publishedAt: undefined,
+                    updatedAt: undefined,
+                  }
+                })),
+                location: session.parking.location ? {
+                  data: {
+                    id: session.parking.location.id,
+                    attributes: {
+                      ...session.parking.location,
+                      createdAt: undefined,
+                      publishedAt: undefined,
+                      updatedAt: undefined,
+                    }
+                  }
+                } : null,
+                currency: session.parking.currency ? {
+                  data: {
+                    id: session.parking.currency.id,
+                    attributes: {
+                      ...session.parking.currency,
+                      createdAt: undefined,
+                      publishedAt: undefined,
+                      updatedAt: undefined,
+                    }
+                  }
+                } : null,
+                capacity: session.parking.capacity ? {
+                  data: {
+                    id: session.parking.capacity.id,
+                    attributes: {
+                      ...session.parking.capacity,
+                      createdAt: undefined,
+                      publishedAt: undefined,
+                      updatedAt: undefined,
+                    }
+                  }
+                } : null,
+              }
+            }
+          } : null,
+        }
+      };
+    });
+    return {
+      data: formattedSessions,
+      meta: {} // Add any relevant meta information here
+    };
   }
 }));

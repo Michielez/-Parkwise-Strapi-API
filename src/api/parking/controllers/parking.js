@@ -103,13 +103,8 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
       await strapi.entityService.delete('api::current-session.current-session', currentSessionId);
 
       function calculatePaymentAmount(priceRates, duration) {
-        // Sort the rates by minutes in ascending order
         const sortedRates = priceRates.sort((a, b) => a.minutes - b.minutes);
-
-        // Find the appropriate rate
         const priceRate = sortedRates.find(rate => duration <= rate.minutes);
-
-        // If no rate is found (duration is less than the lowest rate), charge is free
         if (!priceRate) {
           return 0;
         }
