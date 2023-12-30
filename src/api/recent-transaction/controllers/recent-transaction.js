@@ -20,7 +20,13 @@ module.exports = createCoreController('api::recent-transaction.recent-transactio
       filters: { user: user.id },
       populate: {
         duration: true,
-        parking: true,
+        parking: {
+          populate: {
+            price_rates: true,
+            location: true,
+            currency: true
+          }
+        },
         payment: {
           populate: {
             currency: true
@@ -43,7 +49,20 @@ module.exports = createCoreController('api::recent-transaction.recent-transactio
         ...parking,
         createdAt: undefined,
         publishedAt: undefined,
-        updatedAt: undefined
+        updatedAt: undefined,
+        location: parking.location? {
+          ...parking.location,
+          createdAt: undefined,
+          publishedAt: undefined,
+          updatedAt: undefined,
+        } : null,
+        price_rates: parking.price_rates.map(rate => ({
+          ...rate,
+          createdAt: undefined,
+          publishedAt: undefined,
+          updatedAt: undefined,
+          minprice: undefined
+        }))
       } : null;
 
       const filteredPayment = payment ? {

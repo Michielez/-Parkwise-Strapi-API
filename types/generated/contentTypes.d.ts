@@ -573,6 +573,50 @@ export interface PluginContentReleasesReleaseAction
   };
 }
 
+export interface PluginI18NLocale extends Schema.CollectionType {
+  collectionName: 'i18n_locale';
+  info: {
+    singularName: 'locale';
+    pluralName: 'locales';
+    collectionName: 'locales';
+    displayName: 'Locale';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    'content-manager': {
+      visible: false;
+    };
+    'content-type-builder': {
+      visible: false;
+    };
+  };
+  attributes: {
+    name: Attribute.String &
+      Attribute.SetMinMax<{
+        min: 1;
+        max: 50;
+      }>;
+    code: Attribute.String & Attribute.Unique;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'plugin::i18n.locale',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface PluginUsersPermissionsPermission
   extends Schema.CollectionType {
   collectionName: 'up_permissions';
@@ -741,43 +785,36 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
-export interface PluginI18NLocale extends Schema.CollectionType {
-  collectionName: 'i18n_locale';
+export interface ApiCapacityCapacity extends Schema.CollectionType {
+  collectionName: 'capacities';
   info: {
-    singularName: 'locale';
-    pluralName: 'locales';
-    collectionName: 'locales';
-    displayName: 'Locale';
-    description: '';
+    singularName: 'capacity';
+    pluralName: 'capacities';
+    displayName: 'Capacity';
   };
   options: {
-    draftAndPublish: false;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: false;
-    };
-    'content-type-builder': {
-      visible: false;
-    };
+    draftAndPublish: true;
   };
   attributes: {
-    name: Attribute.String &
-      Attribute.SetMinMax<{
-        min: 1;
-        max: 50;
-      }>;
-    code: Attribute.String & Attribute.Unique;
+    total: Attribute.BigInteger;
+    available: Attribute.BigInteger;
+    taken: Attribute.BigInteger;
+    parking: Attribute.Relation<
+      'api::capacity.capacity',
+      'oneToOne',
+      'api::parking.parking'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
-      'plugin::i18n.locale',
+      'api::capacity.capacity',
       'oneToOne',
       'admin::user'
     > &
       Attribute.Private;
     updatedBy: Attribute.Relation<
-      'plugin::i18n.locale',
+      'api::capacity.capacity',
       'oneToOne',
       'admin::user'
     > &
@@ -909,13 +946,14 @@ export interface ApiLocationLocation extends Schema.CollectionType {
     singularName: 'location';
     pluralName: 'locations';
     displayName: 'Location';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
     lng: Attribute.Float & Attribute.Required;
-    lat: Attribute.Float;
+    lat: Attribute.Float & Attribute.Required;
     parking: Attribute.Relation<
       'api::location.location',
       'oneToOne',
@@ -972,6 +1010,11 @@ export interface ApiParkingParking extends Schema.CollectionType {
       'api::parking.parking',
       'oneToMany',
       'api::current-session.current-session'
+    >;
+    capacity: Attribute.Relation<
+      'api::parking.parking',
+      'oneToOne',
+      'api::capacity.capacity'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -1134,10 +1177,11 @@ declare module '@strapi/types' {
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
+      'plugin::i18n.locale': PluginI18NLocale;
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
-      'plugin::i18n.locale': PluginI18NLocale;
+      'api::capacity.capacity': ApiCapacityCapacity;
       'api::currency.currency': ApiCurrencyCurrency;
       'api::current-session.current-session': ApiCurrentSessionCurrentSession;
       'api::duration.duration': ApiDurationDuration;

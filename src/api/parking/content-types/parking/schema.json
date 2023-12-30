@@ -41,6 +41,12 @@
       "relation": "oneToMany",
       "target": "api::current-session.current-session",
       "mappedBy": "parking"
+    },
+    "capacity": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::capacity.capacity",
+      "inversedBy": "parking"
     }
   }
 }
