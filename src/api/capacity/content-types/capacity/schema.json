@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "capacities",
+  "info": {
+    "singularName": "capacity",
+    "pluralName": "capacities",
+    "displayName": "Capacity"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "total": {
+      "type": "biginteger"
+    },
+    "available": {
+      "type": "biginteger"
+    },
+    "taken": {
+      "type": "biginteger"
+    },
+    "parking": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::parking.parking",
+      "mappedBy": "capacity"
+    }
+  }
+}
