@@ -72,15 +72,17 @@ module.exports = createCoreController('api::recent-transaction.recent-transactio
                     }
                   }
                 } : null,
-                price_rates: transaction.parking.price_rates.map(rate => ({
-                  id: rate.id,
-                  attributes: {
-                    ...rate,
-                    createdAt: undefined,
-                    publishedAt: undefined,
-                    updatedAt: undefined,
-                  }
-                })),
+                price_rates: {
+                  data: transaction.parking.price_rates.map(rate => ({
+                    id: rate.id,
+                    attributes: {
+                      ...rate,
+                      createdAt: undefined,
+                      publishedAt: undefined,
+                      updatedAt: undefined,
+                    }
+                  }))
+                },
                 currency: transaction.parking.currency ? {
                   data: {
                     id: transaction.parking.currency.id,

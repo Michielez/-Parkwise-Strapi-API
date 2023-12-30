@@ -60,7 +60,7 @@ module.exports = createCoreController('api::current-session.current-session', ({
                 createdAt: undefined,
                 publishedAt: undefined,
                 updatedAt: undefined,
-                price_rates: session.parking.price_rates.map(rate => ({
+                price_rates: {data: session.parking.price_rates.map(rate => ({
                   id: rate.id,
                   attributes: {
                     ...rate,
@@ -68,7 +68,7 @@ module.exports = createCoreController('api::current-session.current-session', ({
                     publishedAt: undefined,
                     updatedAt: undefined,
                   }
-                })),
+                }))},
                 location: session.parking.location ? {
                   data: {
                     id: session.parking.location.id,
