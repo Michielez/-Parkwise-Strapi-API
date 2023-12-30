@@ -14,52 +14,39 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
     const user = ctx.state.user;
     try {
 
-      console.log("Fetching parking");
-
       const parking = await strapi.entityService.findOne('api::parking.parking', parkingId, {
         populate: {
           capacity: true
         }
       })
 
-      console.log(parking);
-
-      console.log("Checking parking availability");
-
       if (!parking || BigInt(parking.capacity.available) <= 0){
         return ctx.badRequest('Parking is not available');
       }
 
-      console.log("Creating duration");
-
       const duration = await strapi.entityService.create('api::duration.duration', {
         data: {
           start: new Date(),
-          end: null
+          end: null,
+          publishedAt: new Date(),
         }
       })
-
-      console.log(duration);
-
-      console.log("Creating current session");
 
       const session = await strapi.entityService.create('api::current-session.current-session', {
         data: {
           car: car,
           parking: parkingId,
           duration: duration.id,
-          user: user.id
+          user: user.id,
+          publishedAt: new Date(),
         }
       })
-
-      console.log(session);
-
-      console.log("Updating parking capacity");
 
       await strapi.entityService.update('api::capacity.capacity', parking.capacity.id, {
         data: {
           available: Number(parking.capacity.available) - 1,
           taken: Number(parking.capacity.taken) + 1,
+          updatedAt: new Date(),
         }
       })
 
@@ -70,8 +57,101 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
     }
   },
 
-  async verlaat(ctx){
+  async leave(ctx){
+    const { paymentMethod } = ctx.request.body.data;
+    const user = ctx.state.user;
+    try {
 
+      const userInformation = await strapi.db.query('plugin::users-permissions.user').findOne({
+        where: {id: user.id},
+        populate: {
+          current_session: true
+        }
+      });
+
+      const currentSessionId = userInformation.current_session.id;
+
+      const currentSession = await strapi.entityService.findOne('api::current-session.current-session', currentSessionId, {
+        populate: {
+          duration: true,
+          parking: {
+            populate: {
+              price_rates: true,
+              location: true,
+              currency: true,
+              capacity: true,
+            }
+          },
+        }
+      })
+
+      const duration = await strapi.entityService.update('api::duration.duration', currentSession.duration.id, {
+        data: {
+          end: new Date(),
+          updatedAt: new Date(),
+        }
+      })
+
+      await strapi.entityService.update('api::capacity.capacity', currentSession.parking.capacity.id, {
+        data: {
+          available: Number(currentSession.parking.capacity.available) + 1,
+          taken: Number(currentSession.parking.capacity.taken) - 1,
+          updatedAt: new Date(),
+        }
+      });
+
+      await strapi.entityService.delete('api::current-session.current-session', currentSessionId);
+
+      function calculatePaymentAmount(priceRates, duration) {
+        // Sort the rates by minutes in ascending order
+        const sortedRates = priceRates.sort((a, b) => a.minutes - b.minutes);
+
+        // Find the appropriate rate
+        const priceRate = sortedRates.find(rate => duration <= rate.minutes);
+
+        // If no rate is found (duration is less than the lowest rate), charge is free
+        if (!priceRate) {
+          return 0;
+        }
+        return priceRate.price;
+      }
+
+      function calculateMinutes(startTime, endTime){
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+
+        const differenceInMilliseconds = end.getTime() - start.getTime();
+        const differenceInMinutes = differenceInMilliseconds / (1000 * 60);
+
+        return differenceInMinutes;
+      }
+
+      const payment = await strapi.entityService.create('api::payment.payment', {
+        data: {
+          amount: calculatePaymentAmount(currentSession.parking.price_rates, calculateMinutes(duration.start, duration.end)),
+          method: paymentMethod,
+          currency: currentSession.parking.currency.id,
+          time: new Date(),
+          publishedAt: new Date(),
+        }
+      });
+
+      const recentTransaction = await strapi.entityService.create('api::recent-transaction.recent-transaction', {
+        data: {
+          car: currentSession.car,
+          duration: currentSession.duration.id,
+          parking: currentSession.parking.id,
+          payment: payment.id,
+          user: user.id,
+          publishedAt: new Date(),
+        }
+      });
+
+      return {message: "Parking session left successfully", recentTransaction};
+
+    } catch (error) {
+      return ctx.internalServerError(error);
+    }
   }
 
 }));

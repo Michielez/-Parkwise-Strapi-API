@@ -9,8 +9,8 @@ module.exports = {
     },
     {
       method: "POST",
-      path: "/parkings/verlaat",
-      handler: "parking.verlaat"
+      path: "/parkings/leave",
+      handler: "parking.leave"
     }
   ]
 }
