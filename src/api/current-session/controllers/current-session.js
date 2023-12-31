@@ -32,7 +32,6 @@ module.exports = createCoreController('api::current-session.current-session', ({
       }
     });
 
-    console.log(currentSessions);
     const formattedSessions = currentSessions.map(session => {
       return {
         id: session.id,
