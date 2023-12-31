@@ -14,10 +14,6 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
     const user = ctx.state.user;
 
     try {
-
-      console.table({parkingId, car});
-      console.table(user);
-
       console.log("Check if parking has available spots");
 
       const parking = await strapi.entityService.findOne('api::parking.parking', parkingId, {
@@ -27,7 +23,7 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
       })
 
       if (!parking || BigInt(parking.capacity.available) <= 0){
-        return ctx.badRequest('Parking is not available');
+        return ctx.badRequest('Parking is not available or does not exist');
       }
 
       console.log("Creating a new duration")
@@ -74,9 +70,6 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
     const user = ctx.state.user;
 
     try {
-
-      console.log("paymentMethod", paymentMethod);
-      console.table(user);
 
       console.log("Getting user information");
 
