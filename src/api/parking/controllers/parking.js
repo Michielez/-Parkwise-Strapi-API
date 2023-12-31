@@ -12,6 +12,8 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
   async park(ctx){
     const { parkingId, car } = ctx.request.body.data;
     const user = ctx.state.user;
+
+    console.log(ctx.request.body);
     try {
 
       console.table({parkingId, car});
@@ -71,6 +73,9 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
   async leave(ctx){
     const { paymentMethod } = ctx.request.body.data;
     const user = ctx.state.user;
+
+    console.log(ctx.request.body);
+
     try {
 
       console.log("paymentMethod", paymentMethod);
