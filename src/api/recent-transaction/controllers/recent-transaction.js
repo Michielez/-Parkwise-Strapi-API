@@ -23,7 +23,8 @@ module.exports = createCoreController('api::recent-transaction.recent-transactio
           populate: {
             price_rates: true,
             location: true,
-            currency: true
+            currency: true,
+            capacity: true,
           }
         },
         payment: {
