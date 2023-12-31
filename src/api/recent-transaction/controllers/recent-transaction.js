@@ -83,6 +83,17 @@ module.exports = createCoreController('api::recent-transaction.recent-transactio
                     }
                   }))
                 },
+                capacity: transaction.parking.capacity ? {
+                  data: {
+                    id: transaction.parking.capacity.id,
+                    attributes: {
+                      ...transaction.parking.capacity,
+                      createdAt: undefined,
+                      publishedAt: undefined,
+                      updatedAt: undefined,
+                    }
+                  }
+                } : null,
                 currency: transaction.parking.currency ? {
                   data: {
                     id: transaction.parking.currency.id,
