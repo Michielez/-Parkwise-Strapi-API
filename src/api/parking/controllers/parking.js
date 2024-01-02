@@ -22,7 +22,12 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
           current_session: true
         }
       });
-      console.log(userInformation);
+
+      console.log("check if the user isn't parked yet");
+
+      if (userInformation.current_session){
+        return ctx.badRequest('Car is already parked');
+      }
 
       console.log("Check if parking has available spots");
 
