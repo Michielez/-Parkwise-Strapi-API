@@ -105,6 +105,9 @@
       "relation": "oneToMany",
       "target": "api::recent-transaction.recent-transaction",
       "mappedBy": "user"
+    },
+    "car": {
+      "type": "string"
     }
   }
 }

@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2023-12-31T16:07:15.122Z"
+    "x-generation-date": "2024-01-02T14:22:34.404Z"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -1192,6 +1192,9 @@
                                                                               }
                                                                             }
                                                                           }
+                                                                        },
+                                                                        "car": {
+                                                                          "type": "string"
                                                                         },
                                                                         "createdAt": {
                                                                           "type": "string",
@@ -3296,6 +3299,9 @@
                                                               }
                                                             }
                                                           },
+                                                          "car": {
+                                                            "type": "string"
+                                                          },
                                                           "createdAt": {
                                                             "type": "string",
                                                             "format": "date-time"
@@ -4704,6 +4710,9 @@
                                                                               }
                                                                             }
                                                                           }
+                                                                        },
+                                                                        "car": {
+                                                                          "type": "string"
                                                                         },
                                                                         "createdAt": {
                                                                           "type": "string",
@@ -6283,6 +6292,9 @@
                                                                 }
                                                               }
                                                             }
+                                                          },
+                                                          "car": {
+                                                            "type": "string"
                                                           },
                                                           "createdAt": {
                                                             "type": "string",

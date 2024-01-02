@@ -11,9 +11,19 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
 
   async park(ctx){
     const { parkingId, car } = ctx.request.body;
-    const user = ctx.state.user;
 
     try {
+
+      console.log("Get user from car");
+
+      const userInformation = await strapi.db.query('plugin::users-permissions.user').findOne({
+        where: {car: car},
+        populate: {
+          current_session: true
+        }
+      });
+      console.log(userInformation);
+
       console.log("Check if parking has available spots");
 
       const parking = await strapi.entityService.findOne('api::parking.parking', parkingId, {
@@ -43,7 +53,7 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
           car: car,
           parking: parkingId,
           duration: duration.id,
-          user: user.id,
+          user: userInformation.id,
           publishedAt: new Date(),
         }
       })
@@ -66,15 +76,14 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
   },
 
   async leave(ctx){
-    const { paymentMethod } = ctx.request.body;
-    const user = ctx.state.user;
+    const { paymentMethod, car } = ctx.request.body;
 
     try {
 
       console.log("Getting user information");
 
       const userInformation = await strapi.db.query('plugin::users-permissions.user').findOne({
-        where: {id: user.id},
+        where: {car: car},
         populate: {
           current_session: true
         }
@@ -150,7 +159,7 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
           duration: currentSession.duration.id,
           parking: currentSession.parking.id,
           payment: payment.id,
-          user: user.id,
+          user: userInformation.id,
           publishedAt: new Date(),
         }
       });
