@@ -756,7 +756,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     address: Attribute.String;
     city: Attribute.String;
     zip: Attribute.String;
-    Country: Attribute.String;
+    country: Attribute.String;
     language: Attribute.String & Attribute.Required;
     current_session: Attribute.Relation<
       'plugin::users-permissions.user',

@@ -87,7 +87,7 @@
     "zip": {
       "type": "string"
     },
-    "Country": {
+    "country": {
       "type": "string"
     },
     "language": {
