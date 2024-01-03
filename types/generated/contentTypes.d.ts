@@ -753,7 +753,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     firstname: Attribute.String & Attribute.Required;
     lastname: Attribute.String & Attribute.Required;
     tel: Attribute.BigInteger;
-    addres: Attribute.String;
+    address: Attribute.String;
     city: Attribute.String;
     zip: Attribute.String;
     Country: Attribute.String;
