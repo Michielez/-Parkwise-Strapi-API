@@ -129,14 +129,24 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
       console.log("Deleting current session");
       await strapi.entityService.delete('api::current-session.current-session', currentSessionId);
 
-      function calculatePaymentAmount(priceRates, duration) {
-        const sortedRates = priceRates.sort((a, b) => a.minutes - b.minutes);
-        const priceRate = sortedRates.find(rate => duration <= rate.minutes);
-        if (!priceRate) {
+      const calculateParkingPrice = (durationInMinutes, priceRate) => {
+        priceRate.sort((a, b) => a.minutes - b.minutes);
+
+        let calculatedPrice = priceRate[priceRate.length - 1].price;
+
+        for (let entry of priceRate) {
+            if (durationInMinutes <= entry.minutes) {
+                calculatedPrice = entry.price;
+                break;
+            }
+        }
+
+        if (!calculatedPrice){
           return 0;
         }
-        return priceRate.price;
-      }
+
+        return calculatedPrice;
+    };
 
       function calculateMinutes(startTime, endTime){
         const start = new Date(startTime);
@@ -150,7 +160,7 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
       console.log("Creating payment");
       const payment = await strapi.entityService.create('api::payment.payment', {
         data: {
-          amount: calculatePaymentAmount(currentSession.parking.price_rates, calculateMinutes(duration.start, duration.end)),
+          amount: calculateParkingPrice(calculateMinutes(duration.start, duration.end),currentSession.parking.price_rates),
           method: paymentMethod,
           currency: currentSession.parking.currency.id,
           time: new Date(),
