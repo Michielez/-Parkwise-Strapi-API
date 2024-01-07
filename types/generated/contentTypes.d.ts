@@ -1017,6 +1017,7 @@ export interface ApiParkingParking extends Schema.CollectionType {
       'oneToOne',
       'api::capacity.capacity'
     >;
+    temperature: Attribute.Decimal;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

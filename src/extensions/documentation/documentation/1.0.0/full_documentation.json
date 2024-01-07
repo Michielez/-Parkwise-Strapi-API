@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2024-01-03T16:09:16.742Z"
+    "x-generation-date": "2024-01-07T12:48:41.138Z"
   },
   "x-strapi-config": {
     "path": "/documentation",
@@ -1514,6 +1514,10 @@
                           }
                         }
                       },
+                      "temperature": {
+                        "type": "number",
+                        "format": "float"
+                      },
                       "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -2782,6 +2786,10 @@
                                         }
                                       }
                                     }
+                                  },
+                                  "temperature": {
+                                    "type": "number",
+                                    "format": "float"
                                   },
                                   "createdAt": {
                                     "type": "string",
@@ -5032,6 +5040,10 @@
                           }
                         }
                       },
+                      "temperature": {
+                        "type": "number",
+                        "format": "float"
+                      },
                       "createdAt": {
                         "type": "string",
                         "format": "date-time"
@@ -5954,6 +5966,10 @@
                                                                 }
                                                               }
                                                             }
+                                                          },
+                                                          "temperature": {
+                                                            "type": "number",
+                                                            "format": "float"
                                                           },
                                                           "createdAt": {
                                                             "type": "string",

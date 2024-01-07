@@ -47,6 +47,9 @@
       "relation": "oneToOne",
       "target": "api::capacity.capacity",
       "inversedBy": "parking"
+    },
+    "temperature": {
+      "type": "decimal"
     }
   }
 }
