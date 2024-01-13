@@ -14,7 +14,7 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
 
     try {
 
-      console.log("Get user from car");
+      console.info("Get user from car license plate");
 
       const userInformation = await strapi.db.query('plugin::users-permissions.user').findOne({
         where: {car: car},
@@ -23,13 +23,13 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
         }
       });
 
-      console.log("check if the user isn't parked yet");
+      console.info("Check if the user isn't parked yet (doesn't have a current session)");
 
       if (userInformation.current_session){
         return ctx.badRequest('Car is already parked');
       }
 
-      console.log("Check if parking has available spots");
+      console.info("Check if parking has available spots");
 
       const parking = await strapi.entityService.findOne('api::parking.parking', parkingId, {
         populate: {
@@ -41,7 +41,7 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
         return ctx.badRequest('Parking is not available or does not exist');
       }
 
-      console.log("Creating a new duration")
+      console.info("Creating a new duration")
 
       const duration = await strapi.entityService.create('api::duration.duration', {
         data: {
@@ -51,7 +51,7 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
         }
       })
 
-      console.log("Creating a new parking session")
+      console.info("Creating a new parking session")
 
       const session = await strapi.entityService.create('api::current-session.current-session', {
         data: {
@@ -63,7 +63,7 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
         }
       })
 
-      console.log("Updating parking capacity")
+      console.info("Updating parking capacity")
 
       await strapi.entityService.update('api::capacity.capacity', parking.capacity.id, {
         data: {
@@ -85,7 +85,7 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
 
     try {
 
-      console.log("Getting user information");
+      console.info("Get user information");
 
       const userInformation = await strapi.db.query('plugin::users-permissions.user').findOne({
         where: {car: car},
@@ -96,7 +96,7 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
 
       const currentSessionId = userInformation.current_session.id;
 
-      console.log("Getting current session");
+      console.info("Get current session");
 
       const currentSession = await strapi.entityService.findOne('api::current-session.current-session', currentSessionId, {
         populate: {
@@ -111,14 +111,14 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
           },
         }
       })
-      console.log("Updating duration");
+      console.info("Update duration of session");
       const duration = await strapi.entityService.update('api::duration.duration', currentSession.duration.id, {
         data: {
           end: new Date(),
           updatedAt: new Date(),
         }
       })
-      console.log("Updating current session");
+      console.info("Update availability of parking");
       await strapi.entityService.update('api::capacity.capacity', currentSession.parking.capacity.id, {
         data: {
           available: Number(currentSession.parking.capacity.available) + 1,
@@ -126,7 +126,7 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
           updatedAt: new Date(),
         }
       });
-      console.log("Deleting current session");
+      console.info("Deleting current session");
       await strapi.entityService.delete('api::current-session.current-session', currentSessionId);
 
       const calculateParkingPrice = (durationInMinutes, priceRate) => {
@@ -157,7 +157,7 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
 
         return differenceInMinutes;
       }
-      console.log("Creating payment");
+      console.log("Create payment with price calculations");
       const payment = await strapi.entityService.create('api::payment.payment', {
         data: {
           amount: calculateParkingPrice(calculateMinutes(duration.start, duration.end),currentSession.parking.price_rates),
@@ -167,7 +167,7 @@ module.exports = createCoreController('api::parking.parking', ({ strapi }) => ({
           publishedAt: new Date(),
         }
       });
-      console.log("Creating recent transaction");
+      console.log("Create recent transaction");
       const recentTransaction = await strapi.entityService.create('api::recent-transaction.recent-transaction', {
         data: {
           car: currentSession.car,

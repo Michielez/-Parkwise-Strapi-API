@@ -11,6 +11,7 @@ module.exports = createCoreController('api::recent-transaction.recent-transactio
 
   async findCurrentUserRecentTransactions(ctx) {
     const user = ctx.state.user;
+
     if (!user) {
       return ctx.unauthorized(`You're not authorized!`);
     }
@@ -137,7 +138,7 @@ module.exports = createCoreController('api::recent-transaction.recent-transactio
 
     return {
       data: formattedTransactions,
-      meta: {} // Add relevant meta information here
+      meta: {}
     };
   }
 }));

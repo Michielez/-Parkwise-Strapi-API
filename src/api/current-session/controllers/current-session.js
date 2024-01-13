@@ -109,7 +109,7 @@ module.exports = createCoreController('api::current-session.current-session', ({
     });
     return {
       data: formattedSessions,
-      meta: {} // Add any relevant meta information here
+      meta: { }
     };
   }
 }));
